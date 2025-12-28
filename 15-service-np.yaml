@@ -9,7 +9,7 @@ spec:
   component: frontend
   environment: dev
   purpose: node-port
-ports:
+ ports:
  - protocol: TCP
    port: 80
    targetPort: 80
