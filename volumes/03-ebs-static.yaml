@@ -1,6 +1,6 @@
 # creating PC is K8 admin job
 apiVersion: v1
-kind: PersistantVolume
+kind: PersistentVolume
 metadata:
   name: ebs-static
 spec:
