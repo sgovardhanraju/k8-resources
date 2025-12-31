@@ -29,7 +29,7 @@ spec:
       storage: 15Gi
 ---
 apiVersion: v1
-kind: pod
+kind: Pod
 metadata:
   name: nginx
 spec:
