@@ -1,4 +1,4 @@
-# creating PC is K8 admin job
+# Creating PV is K8 admin job
 apiVersion: v1
 kind: PersistentVolume
 metadata:
@@ -6,21 +6,20 @@ metadata:
 spec:
   accessModes:
   - ReadWriteOnce
-  persistentVolumeReclaimPolicy: Recycle 
-  # retain means dont delete data, Recycle means delete data don't delete disk. Delete means delete disk
+  persistentVolumeReclaimPolicy: Retain # retain means don't delete data, Recycle means delete data don't delete disk. Delete means delete the disk
   capacity:
     storage: 15Gi
   csi:
     driver: ebs.csi.aws.com
     fsType: ext4
-    volumeHandle: vol-06c563c58586c3d19
+    volumeHandle: vol-08a1628c9a820c0e0
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: ebs-static
 spec:
-  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be test
+  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
   volumeName: ebs-static
   accessModes:
     - ReadWriteOnce
@@ -32,6 +31,8 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nginx
+  labels:
+    purpose: ebs-static
 spec:
   containers:
   - name: nginx
@@ -45,3 +46,17 @@ spec:
   - name: nginx-html
     persistentVolumeClaim:
       claimName: ebs-static
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-ebs-static
+spec:
+  type: LoadBalancer
+  selector:
+    purpose: ebs-static
+  ports:
+    - protocol: TCP
+      port: 80 # service port
+      targetPort: 80 # container port
+      nodePort: 30007 
